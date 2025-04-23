@@ -1,0 +1,39 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              01/18/2025 16:38:56 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\collage\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include"RSA.h"
+   2          
+   3          int main (void)
+   4          {
+   5   1        
+   6   1        Initalization_System();
+   7   1        ENTER_P(); 
+   8   1        ENTER_q();  
+   9   1        GENERATE_e_AND_d();
+  10   1        Enter_PlainText_AND_encrypt();
+  11   1        decryption ();
+  12   1        while(1);
+  13   1        return 0;
+  14   1      }
+*** WARNING C294 IN LINE 13 OF main.c: unreachable code
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     20    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

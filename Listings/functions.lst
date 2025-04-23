@@ -1,0 +1,216 @@
+C51 COMPILER V9.60.7.0   FUNCTIONS                                                         01/18/2025 22:21:33 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE FUNCTIONS
+OBJECT MODULE PLACED IN .\Objects\functions.obj
+COMPILER INVOKED BY: D:\collage\C51\BIN\C51.EXE functions.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\functions.lst) TABS(2) OBJECT(.\Objects\functions.obj)
+
+line level    source
+
+   1          
+   2          #include "functions.h"
+   3          #include "UART.h"
+   4          
+   5          char binaryNum[16];
+   6          void TRANSIMT_TEXT(char * TEXT)
+   7          {
+   8   1        char i=0;
+   9   1        for ( i = 0; TEXT[i];i++)
+  10   1        {
+  11   2          transmit(TEXT[i]);
+  12   2        }
+  13   1      }
+  14          
+  15          
+  16           
+  17          void RECEIVED_TWOBYTE (int * Data)
+  18          {
+  19   1        char Received_data[7]={0};
+  20   1        signed char Digit=0;
+  21   1        int placed=1;
+  22   1        char r_data=0;
+  23   1        r_data=Receive();
+  24   1        
+  25   1        while (r_data!=0x0d)
+  26   1        {
+  27   2          r_data-='0';
+  28   2          Received_data[Digit++]=r_data;
+  29   2          r_data=Receive();
+  30   2          
+  31   2        }
+  32   1        Digit--;
+  33   1        while(Digit>=0)
+  34   1        {
+  35   2          *Data+=Received_data[Digit--]*placed;
+  36   2          placed*=10;
+  37   2          
+  38   2        }
+  39   1        
+  40   1      }
+  41          
+  42          void TRANSIMT_NUM(unsigned long Num)
+  43          {
+  44   1        char lenght=0,num[10]={0};
+  45   1          
+  46   1        while(Num>0)
+  47   1        {
+  48   2          num[lenght++]=(Num%10)+'0';
+  49   2          Num/=10;
+  50   2        }
+  51   1        for (;lenght>=0;lenght--)
+  52   1        {
+  53   2          transmit(num[lenght]);
+  54   2        }
+C51 COMPILER V9.60.7.0   FUNCTIONS                                                         01/18/2025 22:21:33 PAGE 2   
+
+  55   1        
+  56   1      }
+  57          
+  58          
+  59          char decToBinary(unsigned long n)
+  60          {
+  61   1          int i = 0;
+  62   1          while (n > 0) {
+  63   2              binaryNum[i] = n % 2;
+  64   2              n = n / 2;
+  65   2              i++;
+  66   2          }
+  67   1          return i-1;
+  68   1      }
+  69          unsigned long SQR_AND_MULL (int base , unsigned long exp , unsigned long N_Mode)
+  70          {
+  71   1          unsigned long  Rem=base;
+  72   1          signed char j=0;
+  73   1          char Length=0;
+  74   1         
+  75   1           Length=decToBinary(exp);
+  76   1      
+  77   1           for (j = (Length-1); j >= 0; j--){
+  78   2              if(binaryNum[j]==0){
+  79   3                  Rem=(Rem*Rem); 
+  80   3              }else{
+  81   3                  Rem=(Rem*Rem);
+  82   3                  Rem=Rem%N_Mode;
+  83   3                  Rem=(Rem*base);
+  84   3              }
+  85   2              Rem=Rem%N_Mode;
+  86   2           }
+  87   1           return Rem;
+  88   1      }
+  89           int Generate_RandomNUM(int Boundary)
+  90          {
+  91   1          static int RAND_NUM=14625;
+  92   1          unsigned int a = 1664525;
+  93   1          unsigned int c = 1013904;
+  94   1       
+  95   1          
+  96   1          RAND_NUM = (a * RAND_NUM + c) % Boundary;
+  97   1          while(RAND_NUM < 2)
+  98   1          {
+  99   2            RAND_NUM = (a * RAND_NUM + c) % Boundary;
+ 100   2          }
+ 101   1          
+ 102   1          return RAND_NUM;
+ 103   1      }
+ 104          
+ 105          
+ 106          NUM_t Primarity_Test (unsigned int num)
+ 107          {
+ 108   1           int random_number=0,Result=0;
+ 109   1           char Round=0;
+ 110   1           for (Round=0;Round<Securty_Level;Round++)
+ 111   1           {
+ 112   2          
+ 113   2           random_number=Generate_RandomNUM((num-2));
+ 114   2                   
+ 115   2           Result=SQR_AND_MULL(random_number,num-1,num);
+ 116   2            
+C51 COMPILER V9.60.7.0   FUNCTIONS                                                         01/18/2025 22:21:33 PAGE 3   
+
+ 117   2           if (Result!=1)
+ 118   2           {
+ 119   3               return NOTPRIME;
+ 120   3           }
+ 121   2           }
+ 122   1      
+ 123   1               return PRIME;
+ 124   1      }
+ 125          
+ 126          int GCD(unsigned long NUM1,int NUM2)
+ 127          {
+ 128   1          unsigned long TEMP=0;
+ 129   1          if(NUM1 == NUM2)
+ 130   1            {
+ 131   2              return 0;
+ 132   2            }
+ 133   1          while (NUM2 > 0)
+ 134   1            {
+ 135   2              TEMP=NUM1%NUM2;
+ 136   2              NUM1=NUM2;
+ 137   2              NUM2=TEMP;
+ 138   2          }
+ 139   1          return NUM1;
+ 140   1      }
+ 141          char Generate_E (unsigned long PHI_N)
+ 142          {
+ 143   1        unsigned long e=0;
+ 144   1          for ( e = 3;e <PHI_N;e=e+2)
+ 145   1          {
+ 146   2              if (GCD(PHI_N,e)==1)
+ 147   2              {
+ 148   3                  return e;
+ 149   3              }
+ 150   2          }
+ 151   1      }
+ 152          
+ 153          unsigned long MulInverse_EEA(int Key_ENC ,signed long  PHI_N)
+ 154          {
+*** WARNING C235 IN LINE 154 OF functions.c: parameter 2: different types
+ 155   1        
+ 156   1      signed long d=0,TEMP=PHI_N; 
+ 157   1      unsigned char Arr_R[10];
+ 158   1      unsigned char j=0,i=0;  
+ 159   1      signed long Arr_Q[10],T0=0,T1=1;
+ 160   1        
+ 161   1          while (Key_ENC > 1) {
+ 162   2              Arr_R[i]=PHI_N%Key_ENC;
+ 163   2              Arr_Q[i]=PHI_N/Key_ENC;
+ 164   2             
+ 165   2              PHI_N=Key_ENC;
+ 166   2              Key_ENC=Arr_R[i];
+ 167   2            
+ 168   2              i++;
+ 169   2          }
+ 170   1          //////////////////////////////////To Find Multiplicative_inverse//////////////////////////////////////
+             -///////
+ 171   1          for( j=0 ; j<i ;j++){
+ 172   2              d= T0 - (Arr_Q[j]*T1);
+ 173   2              T0 =T1;
+ 174   2              T1=d;
+ 175   2          }
+ 176   1          if(d<0){
+C51 COMPILER V9.60.7.0   FUNCTIONS                                                         01/18/2025 22:21:33 PAGE 4   
+
+ 177   2             d=d+TEMP;
+ 178   2          }else{
+ 179   2             d=d%TEMP;
+ 180   2          }
+ 181   1          
+ 182   1          return d;
+ 183   1      }
+*** WARNING C291 IN LINE 151 OF functions.c: not every exit path returns a value
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1270    ----
+   CONSTANT SIZE    =     17    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     18     152
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,7 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\UART.obj",
+".\Objects\functions.obj",
+".\Objects\RSA.obj" 
+TO ".\Objects\RSA_CODE" 
+PRINT(".\Listings\RSA_CODE.m51") RAMSIZE(256) 

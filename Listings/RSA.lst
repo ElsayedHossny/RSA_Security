@@ -1,0 +1,116 @@
+C51 COMPILER V9.60.7.0   RSA                                                               01/18/2025 17:14:35 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE RSA
+OBJECT MODULE PLACED IN .\Objects\RSA.obj
+COMPILER INVOKED BY: D:\collage\C51\BIN\C51.EXE RSA.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\RSA.l
+                    -st) TABS(2) OBJECT(.\Objects\RSA.obj)
+
+line level    source
+
+   1          #include"UART.h"
+   2          #include"functions.h"
+   3          #include"RSA.h"
+   4          
+   5          int  p =0;
+   6          int  q =0;
+   7          unsigned long  n =0;
+   8          unsigned long  phi_n=0;
+   9          char e=0;
+  10          unsigned long  d=0;
+  11          int PT=0;
+  12          int CT=0;
+  13          void Initalization_System()
+  14          {
+  15   1        UART_Init();
+  16   1      }
+  17          
+  18          void ENTER_P(void)
+  19          {
+  20   1        NUM_t  CheckPrimarity;
+  21   1        TRANSIMT_TEXT("Please Enter First Prime Number :");
+  22   1        RECEIVED_TWOBYTE(&p);
+  23   1        CheckPrimarity=Primarity_Test(p);
+  24   1        while (CheckPrimarity == NOTPRIME)
+  25   1        {
+  26   2          TRANSIMT_TEXT("THIS IS NOT PRIME REENTER PRIME ONE :");
+  27   2          p=0;
+  28   2          RECEIVED_TWOBYTE(&p);
+  29   2          CheckPrimarity=Primarity_Test(p);
+  30   2        }
+  31   1        
+  32   1      }
+  33          
+  34          
+  35          
+  36          void ENTER_q(void)
+  37          {
+  38   1        NUM_t  CheckPrimarity;
+  39   1        TRANSIMT_TEXT("Please Enter Second Prime Number :");
+  40   1        RECEIVED_TWOBYTE(&q);
+  41   1        CheckPrimarity=Primarity_Test(q);
+  42   1        while (CheckPrimarity == NOTPRIME)
+  43   1        {
+  44   2          TRANSIMT_TEXT("THIS IS NOT PRIME REENTER PRIME ONE :");
+  45   2          q=0;
+  46   2          RECEIVED_TWOBYTE(&q);
+  47   2          CheckPrimarity=Primarity_Test(q);
+  48   2        }
+  49   1      
+  50   1      }
+  51          
+  52          
+  53          void GENERATE_e_AND_d(void)
+  54          {
+C51 COMPILER V9.60.7.0   RSA                                                               01/18/2025 17:14:35 PAGE 2   
+
+  55   1        n=p*q;
+  56   1        phi_n=(p-1)*(q-1);
+  57   1        e=Generate_E(phi_n);
+  58   1        
+  59   1        d=MulInverse_EEA(e,phi_n);
+  60   1        TRANSIMT_TEXT("Your Bublic KEY : (");
+  61   1        TRANSIMT_NUM(n);
+  62   1        transmit(',');
+  63   1        TRANSIMT_NUM(e);
+  64   1        transmit(')');
+  65   1      }
+  66          
+  67          
+  68          void Enter_PlainText_AND_encrypt(void)
+  69          {
+  70   1        transmit(0x0d);
+  71   1        TRANSIMT_TEXT("ENTER PLAIN TEXT :");
+  72   1        RECEIVED_TWOBYTE(&PT);
+  73   1        CT=SQR_AND_MULL(PT,e,n);
+  74   1        TRANSIMT_TEXT("YOUR CIPHER TEXT :");
+  75   1        TRANSIMT_NUM(CT);
+  76   1      }
+  77          
+  78          void decryption (void)
+  79          {
+  80   1        transmit(0x0d);
+  81   1        TRANSIMT_TEXT("ENTER CIPHER TEXT :");
+  82   1        CT=0;
+  83   1        RECEIVED_TWOBYTE(&CT);
+  84   1        PT=SQR_AND_MULL(CT,d,n);
+  85   1        TRANSIMT_TEXT("YOUR PLAIN TEXT :");
+  86   1        TRANSIMT_NUM(PT);
+  87   1      }
+  88          
+  89          
+  90          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    401    ----
+   CONSTANT SIZE    =    203    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     21    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
